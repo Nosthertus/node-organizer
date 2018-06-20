@@ -55,4 +55,24 @@ module.exports = class Project extends Model {
 
 		models = sequelize.models;
 	}
+
+	/**
+	 * Defines the model associations in the database
+	 */
+	static associate() {
+		this.hasMany(models.Task, {
+			sourceKey: "id",
+			foreignKey: "projects_id"
+		});
+
+		this.belongsTo(models.User, {
+			targetKey: "id",
+			foreignKey: "users_id"
+		});
+
+		this.belongsTo(models.ProjectType, {
+			targetKey: "id",
+			foreignKey: "types_id"
+		});
+	}
 };

@@ -69,4 +69,24 @@ module.exports = class User extends Model {
 
 		models = sequelize.models;
 	}
+
+	/**
+	 * Defines the model associations in the database
+	 */
+	static associate() {
+		this.hasMany(models.TaskAssignee, {
+			sourceKey: "id",
+			foreignKey: "users_id"
+		});
+
+		this.hasMany(models.Project, {
+			sourceKey: "id",
+			foreignKey: "users_id"
+		});
+
+		this.hasMany(models.TaskComment, {
+			sourceKey: "id",
+			foreignKey: "users_id"
+		});
+	}
 };

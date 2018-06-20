@@ -40,4 +40,19 @@ module.exports = class TaskAssignee extends Model {
 
 		models = sequelize.models;
 	}
+
+	/**
+	 * Defines the model associations in the database
+	 */
+	static associate() {
+		this.belongsTo(models.Task, {
+			targetKey: "id",
+			foreignKey: "tasks_id"
+		});
+
+		this.belongsTo(models.User, {
+			targetKey: "id",
+			foreignKey: "users_id"
+		});
+	}
 };

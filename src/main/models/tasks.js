@@ -46,4 +46,24 @@ module.exports = class Task extends Model {
 
 		models = sequelize.models;
 	}
+
+	/**
+	 * Defines the model associations in the database
+	 */
+	static associate() {
+		this.belongsTo(models.Project, {
+			targetKey: "id",
+			foreignKey: "projects_id"
+		});
+
+		this.hasMany(models.TaskAssignee, {
+			sourceKey: "id",
+			foreignKey: "tasks_id"
+		});
+
+		this.hasMany(models.TaskComment, {
+			sourceKey: "id",
+			foreignKey: "tasks_id"
+		});
+	}
 };
