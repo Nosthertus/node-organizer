@@ -1,4 +1,33 @@
 const {Model, DataTypes} = require("sequelize");
+const bcrypt = require("bcrypt");
+
+class User extends Model {
+	static init(sequelize) {
+		super.init(attributes, Object.assign({}, {sequelize}, tableOptions));
+
+		models = sequelize.models;
+	}
+
+	/**
+	 * Defines the model associations in the database
+	 */
+	static associate() {
+		this.hasMany(models.TaskAssignee, {
+			sourceKey: "id",
+			foreignKey: "users_id"
+		});
+
+		this.hasMany(models.Project, {
+			sourceKey: "id",
+			foreignKey: "users_id"
+		});
+
+		this.hasMany(models.TaskComment, {
+			sourceKey: "id",
+			foreignKey: "users_id"
+		});
+	}
+}
 
 let models = {};
 
@@ -60,33 +89,39 @@ const tableOptions = {
 	createdAt: "create_time",
 	updatedAt: "update_time",
 	deletedAt: "delete_time",
-	paranoid: true
-};
-
-module.exports = class User extends Model {
-	static init(sequelize) {
-		super.init(attributes, Object.assign({}, {sequelize}, tableOptions));
-
-		models = sequelize.models;
-	}
-
-	/**
-	 * Defines the model associations in the database
-	 */
-	static associate() {
-		this.hasMany(models.TaskAssignee, {
-			sourceKey: "id",
-			foreignKey: "users_id"
-		});
-
-		this.hasMany(models.Project, {
-			sourceKey: "id",
-			foreignKey: "users_id"
-		});
-
-		this.hasMany(models.TaskComment, {
-			sourceKey: "id",
-			foreignKey: "users_id"
-		});
+	paranoid: true,
+	hooks: {
+		beforeCreate: hashPassword,
+		beforeUpdate: hashPassword
 	}
 };
+
+/**
+ * Hashes the password property of an user instance
+ * This modifies the password field in the instance
+ *
+ * @param  {Model<User>}        instance The user instance
+ * @return {Promise<undefined>}          The result of hashing the password
+ */
+function hashPassword(instance){
+	// Do not hash password if password was not changed upon update
+	if(!instance.changed("password")){
+		return;
+	}
+
+	// Hash password with 10 salt rounds
+	return new Promise((resolve) => {
+		bcrypt.hash(instance.get("password"), 10, (err, hash) => {
+			resolve(hash);
+		});
+	}).then(hash => {
+		instance.password = hash;
+	});
+}
+
+// Define all plain functions to the class so they can be tested
+if (typeof it !== "undefined") {
+	User._hashPassword = hashPassword;
+}
+
+module.exports = User;

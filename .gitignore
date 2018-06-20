@@ -41,3 +41,6 @@ jspm_packages
 
 # Mysql workbench backup
 *.mwb.bak
+
+# sonarqube coverage file
+xunit.xml
