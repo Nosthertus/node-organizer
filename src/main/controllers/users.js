@@ -1,4 +1,5 @@
 const bcrypt    = require("bcrypt");
+const _         = require("underscore");
 const sequelize = require("./../connection");
 const User      = sequelize.models.User;
 
@@ -39,16 +40,23 @@ class UserController {
 	/**
 	 * Gets an user by the provided email
 	 *
-	 * @param  {String}           email The email of the user
-	 * @throws {NotFoundResource} If    No user was found
-	 * @return {Promise<Model>}         The result with the user instance
+	 * @param  {String}           email      The email of the user
+	 * @param  {Array}            attributes The list of attributes to choose in the result
+	 * @throws {NotFoundResource} If         No user was found
+	 * @return {Promise<Model>}              The result with the user instance
 	 */
-	static getByEmail(email) {
+	static getByEmail(email, attributes) {
 		const criteria = {
-			email: email
+			where: {
+				email: email
+			}
 		};
 
-		return User.findOne({where: criteria})
+		if (_.isArray(attributes)) {
+			criteria.attributes = attributes
+		}
+
+		return User.findOne(criteria)
 			.then(user => {
 				if (user == null) {
 					throw new NotFoundResource("User is not found");
@@ -159,13 +167,13 @@ class UserController {
 	static login(email, password) {
 		let _user;
 
-		return this.getByEmail(email)
+		return this.getByEmail(email, ["email", "password"])
 			.then(user => {
 				_user = user;
 
 				return bcrypt.compare(password, user.password);
 			}).then(() => {
-				return _user.toJSON();
+				return _user;
 			}).catch(() => {
 				throw new InvalidLoginError("Email or Password is incorrect");
 			});

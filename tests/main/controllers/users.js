@@ -42,6 +42,24 @@ describe("User controller test", () => {
 			.and.be.instanceOf(UserModel);
 	});
 
+	it("should get an user by email with selected fields", () => {
+		sandbox.stub(UserModel, "findOne").resolves({});
+
+		const args = ["random@test.com", ["email", "password"]];
+		const expectedArg = {
+			where: {email: "random@test.com"},
+			attributes: ["email", "password"]
+		};
+
+		return expect(UserController.getByEmail(...args)).to.be.eventually.fulfilled
+			.then(() => {
+				const call = UserModel.findOne.getCall(0);
+				const arg = call.args[0];
+
+				return expect(arg).to.eql(expectedArg);
+			});
+	});
+
 	it("should get an user with provided field name and value", () => {
 		sandbox.stub(UserModel, "findOne").resolves(new UserModel());
 
