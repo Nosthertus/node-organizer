@@ -93,6 +93,11 @@ const tableOptions = {
 	hooks: {
 		beforeCreate: hashPassword,
 		beforeUpdate: hashPassword
+	},
+	defaultScope: {
+		attributes: {
+			exclude: ["password"]
+		}
 	}
 };
 
