@@ -150,7 +150,6 @@ class UserController {
 	 * @param  {Number}  id The id of the user
 	 * @return {Promise}    The result of deleting an user
 	 */
-
 	static deleteById(id) {
 		return this.getById(id)
 			.then(user => user.destroy());
