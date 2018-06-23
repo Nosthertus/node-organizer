@@ -1,4 +1,6 @@
-const {Model, DataTypes} = require("sequelize");
+const sequelize = require("sequelize");
+const Model     = sequelize.Model;
+const DataTypes = sequelize.DataTypes;
 
 let models = {};
 
@@ -37,7 +39,7 @@ const attributes = {
 };
 
 const tableOptions = {
-	tableName: "users",
+	tableName: "projects",
 	createdAt: "create_time",
 	updatedAt: "update_time",
 	deletedAt: "delete_time",
@@ -54,6 +56,32 @@ module.exports = class Project extends Model {
 		super.init(attributes, Object.assign({}, {sequelize}, tableOptions));
 
 		models = sequelize.models;
+	}
+
+	/**
+	 * Injects scopes into the Model
+	 * @NOTE: This should be loaded after all models have been loaded into the sequelize instance
+	 * @private
+	 */
+	static _loadScopes() {
+		const scopes = {
+			withType: {
+				include: [{
+					model: models.ProjectType,
+					attributes: []
+				}],
+				attributes: {
+					include: [[sequelize.col("ProjectType.name"), "type"]],
+					exclude: ["types_id"]
+				}
+			}
+		};
+
+		for (let scopeName in scopes) {
+			let scope = scopes[scopeName];
+
+			this.addScope(scopeName, scope);
+		}
 	}
 
 	/**

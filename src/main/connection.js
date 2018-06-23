@@ -32,6 +32,10 @@ Object.keys(sequelize.models)
 		if (_.has(model, "associate")) {
 			model.associate(sequelize.models);
 		}
+
+		if (_.has(model, "_loadScopes")) {
+			model._loadScopes();
+		}
 	});
 
 module.exports = sequelize;
