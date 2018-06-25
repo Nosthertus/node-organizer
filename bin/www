@@ -1,0 +1,50 @@
+const app    = require("./../index");
+const http   = require("http");
+const env    = process.env.NODE_ENV || "development";
+const config = require("./../config.json")[env];
+
+app.set("port", config.port);
+
+let server = http.createServer(app);
+
+server.listen(config.port);
+
+server.on("error", onError);
+server.on("listening", onListening);
+
+/**
+ * Handles server thrown errors
+ *
+ * @param  {Error} error The error that should be handled
+ * @throws {Error} If    There is no controlled case in the provided error
+ */
+function onError(error) {
+	if(error.syscall !== "listen"){
+		throw error;
+	}
+
+	const bind = typeof port === "string" ? `Pipe ${port}` : `Port ${port}`;
+
+	// handle specific listen errors with friendly messages
+	switch(error.code){
+		case "EACCES":
+			console.error(`${bind} requires elevated privileges`);
+			process.exit(1);
+			break;
+		case "EADDRINUSE":
+			console.error(`${bind} is already in use`);
+			process.exit(1);
+			break;
+		default:
+			throw error;
+	}
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+function onListening() {
+	let addr   = server.address();
+	const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+	console.log(`Listening on ${bind}`);
+}
