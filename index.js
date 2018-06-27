@@ -4,6 +4,7 @@ const cors       = require("cors");
 const Helper     = require("./utils/helper");
 
 const usersRouter = Helper.loadRoute("users");
+const projectsRouter = Helper.loadRoute("projects");
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use("/api/users", usersRouter);
+app.use("/api/projects", projectsRouter);
 
 app.use(errorHandler);
 
