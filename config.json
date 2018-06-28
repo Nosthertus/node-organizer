@@ -1,6 +1,7 @@
 {
 	"development": {
 		"port": 80,
+		"secretKey": "devOrganizer",
 		"database": {
 			"username": "root",
 			"password": "root6174",
