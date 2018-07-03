@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors       = require("cors");
 const Helper     = require("./utils/helper");
 
+const authRouter = Helper.loadRoute("auth");
 const usersRouter = Helper.loadRoute("users");
 const projectsRouter = Helper.loadRoute("projects");
 
@@ -12,6 +13,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/projects", projectsRouter);
 
