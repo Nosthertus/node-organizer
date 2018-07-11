@@ -16,7 +16,7 @@ class JSONWebToken {
 	 * @private
 	 */
 	static _getTokenFromAuthorization(payload) {
-		if (!payload.startsWith("Bearer")) {
+		if (!payload || !payload.startsWith("Bearer")) {
 			return null;
 		}
 

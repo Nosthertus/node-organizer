@@ -7,12 +7,15 @@ const authRouter = Helper.loadRoute("auth");
 const usersRouter = Helper.loadRoute("users");
 const projectsRouter = Helper.loadRoute("projects");
 
+const authentication = Helper._loadCode("authentication", "helpers");
+
 const app = express();
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use("/api", authentication);
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/projects", projectsRouter);
@@ -22,6 +25,11 @@ app.use(errorHandler);
 function errorHandler(error, request, response, next){
 	switch(error.name){
 		case "InvalidLoginError":
+			response.status(401);
+			response.json(error.toJSON());
+			break;
+
+		case "SessionExpiredError":
 			response.status(401);
 			response.json(error.toJSON());
 			break;

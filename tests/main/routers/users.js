@@ -10,6 +10,8 @@ const usersController = Helper.loadController("users");
 const NotFoundResource = Helper.loadError("NotFoundResource");
 const InvalidBodyError = Helper.loadError("InvalidBodyError");
 
+const JSONWebToken = Helper._loadCode("JSONWebToken", "classes");
+
 describe("Users route testing", function(){
 	let uri = "/api/users";
 	let agent = supertest.agent(app);
@@ -18,6 +20,7 @@ describe("Users route testing", function(){
 	beforeEach(function(){
 		sandbox = sinon.createSandbox();
 
+		sandbox.stub(JSONWebToken, "decodeFromAuthorization").resolves();
 		sandbox.stub(usersController, "getById").resolves({ id: 4, type: "professional" });
 	});
 
@@ -64,6 +67,7 @@ describe("Users route testing", function(){
 		it("should respond with not found on user", function () {
 			sandbox.restore();
 
+			sandbox.stub(JSONWebToken, "decodeFromAuthorization").resolves();
 			sandbox.stub(usersController, "getById").rejects(new NotFoundResource("user no found"));
 
 			return agent.get(`${uri}/6`)

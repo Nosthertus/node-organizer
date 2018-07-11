@@ -10,6 +10,8 @@ const projectsController = Helper.loadController("projects");
 const NotFoundResource = Helper.loadError("NotFoundResource");
 const InvalidBodyError = Helper.loadError("InvalidBodyError");
 
+const JSONWebToken = Helper._loadCode("JSONWebToken", "classes");
+
 describe("Project route testing", () => {
 	let sandbox;
 	let baseUri = "/api/projects";
@@ -17,6 +19,8 @@ describe("Project route testing", () => {
 
 	beforeEach(() => {
 		sandbox = sinon.createSandbox();
+
+		sandbox.stub(JSONWebToken, "decodeFromAuthorization").resolves();
 	});
 
 	afterEach(() => {
