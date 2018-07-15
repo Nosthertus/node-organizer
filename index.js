@@ -6,6 +6,7 @@ const Helper     = require("./utils/helper");
 const authRouter = Helper.loadRoute("auth");
 const usersRouter = Helper.loadRoute("users");
 const projectsRouter = Helper.loadRoute("projects");
+const tasksRouter = Helper.loadRoute("tasks");
 
 const authentication = Helper._loadCode("authentication", "helpers");
 
@@ -19,6 +20,7 @@ app.use("/api", authentication);
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/projects", projectsRouter);
+app.use("/api/tasks", tasksRouter);
 
 app.use(errorHandler);
 

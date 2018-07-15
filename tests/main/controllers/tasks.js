@@ -27,6 +27,22 @@ describe("Task controller test", () => {
 			.and.be.instanceOf(Array);
 	});
 
+	it("should get a list of tasks with a filter criteria", () => {
+		const filters = {
+			projects_id: 3
+		};
+		const expectedArg = { where: filters };
+
+		sandbox.stub(TaskModel, "findAll").resolves();
+
+		return expect(TaskController.getAll(filters)).to.be.eventually.fulfilled
+			.then(() => {
+				const spy = TaskModel.findAll.getCall(0);
+
+				return expect(spy.args[0]).to.be.eql(expectedArg);
+			});
+	});
+
 	it("should get a task by id", () => {
 		sandbox.stub(TaskModel, "findById").resolves(new TaskModel());
 

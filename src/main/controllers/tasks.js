@@ -6,12 +6,32 @@ const InvalidBodyError = require("./../errors/InvalidBodyError");
 
 class taskController {
 	/**
+	 * The list of fields that can be aplied for a criteria search
+	 *
+	 * @return {string[]}
+	 */
+	static get filters() {
+		return ["projects_id"];
+	}
+
+	/**
 	 * Gets a list of tasks
 	 *
-	 * @returns {Promise<Array<Model>>} The result with a list of task instances
+	 * @param  {Object}                filters The criteria filter to apply in the search
+	 * @return {Promise<Array<Model>>}         The result with a list of task instances
 	 */
-	static getAll() {
-		return Task.findAll();
+	static getAll(filters) {
+		let criteria = {};
+
+		if (filters) {
+			Object.keys(filters).forEach(filter => {
+				if (this.filters.includes(filter)) {
+					criteria[filter] = filters[filter];
+				}
+			});
+		}
+
+		return Task.findAll({ where: criteria });
 	}
 
 	/**
